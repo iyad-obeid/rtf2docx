@@ -1,8 +1,9 @@
 rtf2docx
 ========
 Converts rtf to docx
-  Captures text in an rtf file including headers and footers, and converts to a docx
-  Run with -h or -help flag for more information on how to run
+
+...Captures text in an rtf file including headers and footers, and converts to a docx
+...Run with -h or -help flag for more information on how to run
 
 Code is based on docx.py which is downloaded from here:
     https://github.com/mikemaccana/python-docx
