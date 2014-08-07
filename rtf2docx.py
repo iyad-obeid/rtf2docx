@@ -74,7 +74,7 @@ def init_vars():
 		elif sys.argv[i][0] == '-':
 			print(' ')
 			print('ERROR: switch ' + sys.argv[i].upper() + ' not found')
-			print('	Try ''./docx2text.py -help'' for more options')
+			print('	Try ''./rtf2docx.py -help'' for more options')
 			print(' ')
 			exit()
 
