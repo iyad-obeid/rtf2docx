@@ -3,7 +3,7 @@
 """
 # RTF2DOCX.PY
 #
-#   Iyad Obeid, 8/7/2014, v1.0.1
+#   Iyad Obeid, 8/7/2014, v1.0.2
 #
 # Converts rtf to docx
 #   Captures text in an rtf file including headers and footers, and converts to a docx
@@ -110,6 +110,8 @@ def init_vars():
 def print_help_screen():
 	print(' ')
 	print('RTF2DOCX.py : coverts an RTF file to an MSWord docx file')
+	print('    ./rtf2docx.py inputfile.docx')
+	print('     OR')
 	print('    ./rtf2docx.py inputfile.docx outputfile.txt')
 	print('    optional switches: -verbose (-v), -help')
 	print(' ')
