@@ -55,8 +55,9 @@ def main():
 def init_vars():
 
 	flag = dict(verbose=False, help=False)
-
+	theArgs = sys.argv[1:]
 	nArguments = len(sys.argv)-1
+
 	# check all the input switches in order to set up process flow properly
 	for i in range(1, len(sys.argv)):
 
@@ -64,11 +65,13 @@ def init_vars():
 			(sys.argv[i].lower() == '-v'):
 			flag['verbose'] = True
 			nArguments -= 1
+			theArgs.pop(0)
 
 		elif (sys.argv[i].lower() == '-help') or \
 			(sys.argv[i].lower() == '-h'):
 			flag['help'] = True
 			nArguments -= 1
+			theArgs.pop(0)
 
 		# unknown switch
 		elif sys.argv[i][0] == '-':
@@ -81,15 +84,18 @@ def init_vars():
 	# Check to see if the minimum number of arguments (2) has been
 	# supplied. Note that you don't need two arguments if the help
 	# flag has been thrown
-	if (flag['help'] is False) and (nArguments != 2):
+	if (flag['help'] is False) and (nArguments == 0):
 		print(' ')
-		print('ERROR: provide input and output filenames')
+		print('ERROR: provide at least an input filename')
 		print(' ')
 		exit()
 
 	# extract the filenames
-	fileNameInput = sys.argv[-2]
-	fileNameOutput = sys.argv[-1]
+	fileNameInput = theArgs[0]
+	if nArguments == 1:
+		fileNameOutput=fileNameInput[0:-3]+'docx'
+	else:
+		fileNameOutput = theArgs[1]
 
 	# check to see if the specified input file exists
 	if os.path.isfile(fileNameInput) is False:
@@ -140,7 +146,14 @@ def create_docx(doc, fileNameOutput):
 	# we also have to catch 'cell' to deal with table and force a print every time.
 	for element in doc.content:
 		for item in element.content:
-			if 'cell' in item.properties:
+			if 'jpegblip' in item.properties:
+				f = open('foo.jpg','wb')
+				f.write(item.content[0].decode('hex'))
+				f.close()
+				relationships,picpara=picture(relationships,'foo.jpg','some text')
+				body.append(picpara)
+				# os.remove('foo.jpg')
+			elif 'cell' in item.properties:
 				if specialText:
 					body.append(paragraph(specialText))
 					specialText = []

@@ -112,7 +112,8 @@ class Rtf15Reader(PythReader):
 	def parse(self):
 		while True:
 			next = self.source.read(1)
-			#print next,
+			#print next
+
 			if not next:
 			#	print 'case 1'
 				break
@@ -122,6 +123,7 @@ class Rtf15Reader(PythReader):
 				continue
 			if next == '{':
 			#	print 'case 3'
+				# print 'SUBGROUP START:'
 				subGroup = Group(self, self.group, self.charsetTable)
 				self.stack.append(subGroup)
 				subGroup.skip = self.group.skip
@@ -136,6 +138,7 @@ class Rtf15Reader(PythReader):
 					self.charsetTable = subGroup.charsetTable
 				self.group.content.append(subGroup)
 
+				# print 'SUBGROUP END\n'
 
 			elif self.group.skip:
 			#	print 'case 5'
@@ -152,6 +155,7 @@ class Rtf15Reader(PythReader):
 			else:
 			#	print 'case 7'
 				self.group.char(next)
+		# END OF WHILE LOOP
 
 
 	def getControl(self):
@@ -206,7 +210,10 @@ class Rtf15Reader(PythReader):
 
 		ctx = DocBuilder(doc, self.clean_paragraphs)
 
+		cnt = 0
 		for bit in self.group.flatten():
+			print cnt,bit
+			cnt+=1
 			typeName = type(bit).__name__
 			getattr(ctx, "handle_%s" % typeName)(bit)
 
@@ -363,6 +370,7 @@ class DocBuilder(object):
 				del self.propStack[-1][marker.name]
 			else:
 				self.propStack[-1][marker.name] = True
+
 	
 
 
@@ -396,11 +404,11 @@ class Group(object):
 			self.destination = True
 			return
 		
-		if self.image and control in ['emfblip', 'pngblip', 'jpegblip', 'macpict', 'pmmetafile', 'wmetafile', 
-									  'dibitmap', 'wbitmap', 'wbmbitspixel', 'wbmplanes', 'wbmwidthbytes', 
-									  'picw', 'pich', 'picwgoal', 'pichgoal', 'picscalex', 'picscaley', 
-									  'picscaled', 'piccropt', 'piccropb', 'piccropr', 'piccropl', 'picbmp', 
-									  'picbpp', 'bin', 'blipupi', 'blipuid', 'bliptag', 'wbitmap']:
+		if self.image and control in ['emfblip', 'pngblip', 'jpegblip', 'macpict', 'pmmetafile', 'wmetafile',
+		                                'dibitmap', 'wbitmap', 'wbmbitspixel', 'wbmplanes', 'wbmwidthbytes',
+										'picw', 'pich', 'picwgoal', 'pichgoal', 'picscalex', 'picscaley',
+										'picscaled', 'piccropt', 'piccropb', 'piccropr', 'piccropl', 'picbmp',
+										'picbpp', 'bin', 'blipupi', 'blipuid', 'bliptag', 'wbitmap']:
 			self.content.append(ImageMarker(control, digits))
 			return
 
@@ -470,7 +478,9 @@ class Group(object):
 
 	def handle_ansicpg(self, codepage):
 		codepage = int(codepage)
-		if codepage in _CODEPAGES_BY_NUMBER:
+		if codepage == 0:
+			self.charset = self.reader.charset = 'cp1252'
+		elif codepage in _CODEPAGES_BY_NUMBER:
 			self.charset = self.reader.charset = _CODEPAGES_BY_NUMBER[codepage]
 		else:
 			raise ValueError("Unknown codepage %s" % codepage)
@@ -686,6 +696,9 @@ class Group(object):
 	def ignore(self, _=None):
 		self.skip = True
 
+
+	def handle_jpegblip(self):
+		''
 
 	def handle_header(self):
 		''
