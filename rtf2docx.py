@@ -3,7 +3,7 @@
 """
 # RTF2DOCX.PY
 #
-#   Iyad Obeid, 8/7/2014, v1.0.2
+#   Iyad Obeid, 9/5/2014, v1.0.3
 #
 # Converts rtf to docx
 #   Captures text in an rtf file including headers and footers, and converts to a docx
