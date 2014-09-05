@@ -57,6 +57,8 @@ def init_vars():
 	flag = dict(verbose=False, help=False)
 	theArgs = sys.argv[1:]
 	nArguments = len(sys.argv)-1
+	fileNameInput = ''
+	fileNameOutput = ''
 
 	# check all the input switches in order to set up process flow properly
 	for i in range(1, len(sys.argv)):
@@ -91,18 +93,19 @@ def init_vars():
 		exit()
 
 	# extract the filenames
-	fileNameInput = theArgs[0]
-	if nArguments == 1:
-		fileNameOutput=fileNameInput[0:-3]+'docx'
-	else:
-		fileNameOutput = theArgs[1]
+	if flag['help'] is False:
+		fileNameInput = theArgs[0]
+		if nArguments == 1:
+			fileNameOutput=fileNameInput[0:-3]+'docx'
+		else:
+			fileNameOutput = theArgs[1]
 
-	# check to see if the specified input file exists
-	if os.path.isfile(fileNameInput) is False:
-		print (' ')
-		print ('ERROR: input file ' + fileNameInput + ' not found')
-		print (' ')
-		exit()
+		# check to see if the specified input file exists
+		if os.path.isfile(fileNameInput) is False:
+			print (' ')
+			print ('ERROR: input file ' + fileNameInput + ' not found')
+			print (' ')
+			exit()
 
 	return flag, fileNameInput, fileNameOutput
 
@@ -113,7 +116,7 @@ def print_help_screen():
 	print('    ./rtf2docx.py inputfile.docx')
 	print('     OR')
 	print('    ./rtf2docx.py inputfile.docx outputfile.txt')
-	print('    optional switches: -verbose (-v), -help')
+	print('    optional switches: -verbose (-v), -help (-h)')
 	print(' ')
 
 
